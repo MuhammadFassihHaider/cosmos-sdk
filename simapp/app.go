@@ -86,9 +86,10 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-
+	v2 "github.com/MuhammadFassihHaider/cosmos-sdk/v2/app/upgrades/v2"
 	// unnamed import of statik for swagger UI support
 	_ "github.com/cosmos/cosmos-sdk/client/docs/statik"
+	
 )
 
 const appName = "SimApp"
@@ -409,6 +410,14 @@ func NewSimApp(
 		),
 	)
 	app.SetEndBlocker(app.EndBlocker)
+
+	app.UpgradeKeeper.SetUpgradeHandler(
+		v2.UpgradeName,
+		v2.CreateUpgradeHandler(
+			app.mm, app.configurator,
+		),
+	)
+
 
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
